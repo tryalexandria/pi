@@ -1355,6 +1355,55 @@ function processBasetenModels(provider: ModelsDevProvider | undefined): Model<Ap
 	return models;
 }
 
+function processOvhcloudAndScalewayModels(data: ModelsDevCatalog): Model<Api>[] {
+	const variants = [
+		{
+			source: "ovhcloud",
+			provider: "ovhcloud",
+			baseUrl: "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1",
+		},
+		{
+			source: "scaleway",
+			provider: "scaleway",
+			baseUrl: "https://api.scaleway.ai/v1",
+		},
+	] as const;
+	const models: Model<Api>[] = [];
+
+	for (const { source, provider, baseUrl } of variants) {
+		for (const [modelId, model] of Object.entries(data[source]?.models ?? {})) {
+			if (model.tool_call !== true || model.status === "deprecated") continue;
+
+			const supportsReasoningEffort = model.reasoning_options?.some((option) => option.type === "effort") ?? false;
+			const compat: OpenAICompletionsCompat = {
+				supportsStore: false,
+				supportsDeveloperRole: false,
+				supportsReasoningEffort,
+				maxTokensField: "max_tokens",
+				supportsStrictMode: false,
+				supportsLongCacheRetention: false,
+			};
+
+			models.push({
+				id: modelId,
+				name: model.name || modelId,
+				api: "openai-completions",
+				provider,
+				baseUrl,
+				reasoning: model.reasoning === true,
+				input: model.modalities?.input?.includes("image") ? ["text", "image"] : ["text"],
+				cost: getModelsDevCost(model.cost),
+				compat,
+				contextWindow: model.limit?.context || 4096,
+				maxTokens: model.limit?.output || 4096,
+			});
+			recordModelsDevReasoningOptions(provider, modelId, model);
+		}
+	}
+
+	return models;
+}
+
 function processFireworksModels(provider: ModelsDevProvider | undefined): Model<Api>[] {
 	if (!provider?.models) return [];
 
@@ -1950,6 +1999,7 @@ async function loadModelsDevData(): Promise<Model<any>[]> {
 		}
 
 		models.push(...processBasetenModels(data.baseten));
+		models.push(...processOvhcloudAndScalewayModels(data));
 
 		// Process OpenCode models (Zen and Go)
 		// API mapping based on provider.npm field:

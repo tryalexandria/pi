@@ -54,6 +54,22 @@ afterEach(() => {
 });
 
 describe("environment API keys", () => {
+	it("resolves OVHcloud and Scaleway credentials through documented aliases", () => {
+		expect(
+			findEnvKeys("ovhcloud", {
+				OVH_AI_ENDPOINTS_ACCESS_TOKEN: "official",
+				OVHCLOUD_API_KEY: "alias",
+			}),
+		).toEqual(["OVH_AI_ENDPOINTS_ACCESS_TOKEN", "OVHCLOUD_API_KEY"]);
+		expect(getEnvApiKey("ovhcloud", { OVHCLOUD_API_KEY: "alias" })).toBe("alias");
+
+		expect(findEnvKeys("scaleway", { SCW_SECRET_KEY: "official", SCALEWAY_API_KEY: "alias" })).toEqual([
+			"SCW_SECRET_KEY",
+			"SCALEWAY_API_KEY",
+		]);
+		expect(getEnvApiKey("scaleway", { SCALEWAY_API_KEY: "alias" })).toBe("alias");
+	});
+
 	it("does not treat generic GitHub tokens as GitHub Copilot credentials", () => {
 		delete process.env.COPILOT_GITHUB_TOKEN;
 		process.env.GH_TOKEN = "gh-token";

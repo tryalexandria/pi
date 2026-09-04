@@ -48,6 +48,8 @@ export type KnownProvider =
 	| "xai"
 	| "groq"
 	| "cerebras"
+	| "ovhcloud"
+	| "scaleway"
 	| "openrouter"
 	| "vercel-ai-gateway"
 	| "zai"

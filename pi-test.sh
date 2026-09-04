@@ -22,6 +22,10 @@ if [[ "$NO_ENV" == "true" ]]; then
   unset GEMINI_API_KEY
   unset GROQ_API_KEY
   unset CEREBRAS_API_KEY
+  unset OVH_AI_ENDPOINTS_ACCESS_TOKEN
+  unset OVHCLOUD_API_KEY
+  unset SCW_SECRET_KEY
+  unset SCALEWAY_API_KEY
   unset XAI_API_KEY
   unset OPENROUTER_API_KEY
   unset ZAI_API_KEY

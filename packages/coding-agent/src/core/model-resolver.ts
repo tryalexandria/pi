@@ -35,6 +35,8 @@ export const defaultModelPerProvider: Record<KnownProvider, string> = {
 	xai: "grok-4.6",
 	groq: "openai/gpt-oss-120b",
 	cerebras: "gpt-oss-120b",
+	ovhcloud: "qwen3-coder-30b-a3b-instruct",
+	scaleway: "qwen3-coder-30b-a3b-instruct",
 	zai: "glm-5.3",
 	"zai-coding-cn": "glm-5.3",
 	mistral: "devstral-medium-latest",

@@ -400,6 +400,10 @@ ${chalk.bold("Environment Variables:")}
   GEMINI_API_KEY                   - Google Gemini API key
   GROQ_API_KEY                     - Groq API key
   CEREBRAS_API_KEY                 - Cerebras API key
+  OVH_AI_ENDPOINTS_ACCESS_TOKEN    - OVHcloud AI Endpoints access token
+  OVHCLOUD_API_KEY                 - OVHcloud access token (alternative name)
+  SCW_SECRET_KEY                   - Scaleway secret key
+  SCALEWAY_API_KEY                 - Scaleway API key (alternative name)
   XAI_API_KEY                      - xAI Grok API key
   FIREWORKS_API_KEY                - Fireworks API key
   TOGETHER_API_KEY                 - Together AI API key

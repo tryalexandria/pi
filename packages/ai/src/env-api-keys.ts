@@ -69,6 +69,12 @@ function getApiKeyEnvVars(provider: string): readonly string[] | undefined {
 	if (provider === "github-copilot") {
 		return ["COPILOT_GITHUB_TOKEN"];
 	}
+	if (provider === "ovhcloud") {
+		return ["OVH_AI_ENDPOINTS_ACCESS_TOKEN", "OVHCLOUD_API_KEY"];
+	}
+	if (provider === "scaleway") {
+		return ["SCW_SECRET_KEY", "SCALEWAY_API_KEY"];
+	}
 
 	// ANTHROPIC_AUTH_TOKEN participates in env discovery/status, but
 	// getEnvApiKey() skips it because requests must pass it as Authorization: Bearer.

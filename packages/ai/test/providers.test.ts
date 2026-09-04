@@ -11,6 +11,8 @@ import { cloudflareAIGatewayProvider } from "../src/providers/cloudflare-ai-gate
 import { cloudflareWorkersAIProvider } from "../src/providers/cloudflare-workers-ai.ts";
 import { fauxAssistantMessage, fauxProvider } from "../src/providers/faux.ts";
 import { googleVertexProvider } from "../src/providers/google-vertex.ts";
+import { ovhcloudProvider } from "../src/providers/ovhcloud.ts";
+import { scalewayProvider } from "../src/providers/scaleway.ts";
 import type {
 	Api,
 	Context,
@@ -64,6 +66,55 @@ describe("builtin providers", () => {
 			supportsOpenAIGrammarTools: true,
 		});
 		expect(getBuiltinModel("anthropic", "claude-haiku-4-5").compat?.supportsStrictTools).toBe(true);
+	});
+
+	it("registers OVHcloud and Scaleway with compatible catalogs and API-key login", async () => {
+		for (const { provider, expected } of [
+			{
+				provider: ovhcloudProvider(),
+				expected: {
+					id: "ovhcloud",
+					name: "OVHcloud AI Endpoints",
+					baseUrl: "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1",
+					env: "OVH_AI_ENDPOINTS_ACCESS_TOKEN",
+				},
+			},
+			{
+				provider: scalewayProvider(),
+				expected: {
+					id: "scaleway",
+					name: "Scaleway Generative APIs",
+					baseUrl: "https://api.scaleway.ai/v1",
+					env: "SCW_SECRET_KEY",
+				},
+			},
+		] as const) {
+			expect(provider).toMatchObject({
+				id: expected.id,
+				name: expected.name,
+				baseUrl: expected.baseUrl,
+			});
+			const model = provider.getModels().find(({ id }) => id === "qwen3-coder-30b-a3b-instruct");
+			expect(model).toMatchObject({
+				api: "openai-completions",
+				provider: expected.id,
+				baseUrl: expected.baseUrl,
+				compat: {
+					supportsStore: false,
+					supportsDeveloperRole: false,
+					maxTokensField: "max_tokens",
+					supportsStrictMode: false,
+					supportsLongCacheRetention: false,
+				},
+			});
+
+			const auth = await provider.auth.apiKey?.resolve({
+				ctx: fakeAuthContext({ [expected.env]: "provider-key" }),
+				signal: neverAbortedSignal,
+			});
+			expect(auth).toEqual({ auth: { apiKey: "provider-key" }, source: expected.env });
+			expect(provider.auth.apiKey?.login).toBeTypeOf("function");
+		}
 	});
 
 	it("uses official Kimi K3 pricing for Moonshot providers", () => {

@@ -79,6 +79,8 @@ pi
 | Mistral | `MISTRAL_API_KEY` | `mistral` |
 | Groq | `GROQ_API_KEY` | `groq` |
 | Cerebras | `CEREBRAS_API_KEY` | `cerebras` |
+| OVHcloud AI Endpoints | `OVH_AI_ENDPOINTS_ACCESS_TOKEN` or `OVHCLOUD_API_KEY` | `ovhcloud` |
+| Scaleway Generative APIs | `SCW_SECRET_KEY` or `SCALEWAY_API_KEY` | `scaleway` |
 | Cloudflare AI Gateway | `CLOUDFLARE_API_KEY` (+ `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_GATEWAY_ID`) | `cloudflare-ai-gateway` |
 | Cloudflare Workers AI | `CLOUDFLARE_API_KEY` (+ `CLOUDFLARE_ACCOUNT_ID`) | `cloudflare-workers-ai` |
 | xAI | `XAI_API_KEY` | `xai` |
@@ -121,6 +123,8 @@ Store credentials in `~/.pi/agent/auth.json`:
   "opencode": { "type": "api_key", "key": "..." },
   "opencode-go": { "type": "api_key", "key": "..." },
   "together": { "type": "api_key", "key": "..." },
+  "ovhcloud": { "type": "api_key", "key": "..." },
+  "scaleway": { "type": "api_key", "key": "..." },
   "qwen-token-plan":  { "type": "api_key", "key": "sk-sp-..." },
   "qwen-token-plan-individual": { "type": "api_key", "key": "sk-sp-..." },
   "qwen-token-plan-cn": { "type": "api_key", "key": "sk-sp-..." },
@@ -201,6 +205,28 @@ export AZURE_OPENAI_RESOURCE_NAME=your-resource
 export AZURE_OPENAI_API_VERSION=2024-02-01
 export AZURE_OPENAI_DEPLOYMENT_NAME_MAP=gpt-4=my-gpt4,gpt-4o=my-gpt4o
 ```
+
+### OVHcloud AI Endpoints
+
+Run `/login ovhcloud`, or set an access token and select a model from the built-in catalog:
+
+```bash
+export OVH_AI_ENDPOINTS_ACCESS_TOKEN=...
+pi --provider ovhcloud --model qwen3-coder-30b-a3b-instruct
+```
+
+Pi uses OVHcloud's unified OpenAI-compatible endpoint. See the [OVHcloud AI Endpoints catalog](https://www.ovhcloud.com/en/public-cloud/ai-endpoints/catalog/).
+
+### Scaleway Generative APIs
+
+Run `/login scaleway`, or set a Scaleway secret key and select a model from the built-in catalog:
+
+```bash
+export SCW_SECRET_KEY=...
+pi --provider scaleway --model qwen3-coder-30b-a3b-instruct
+```
+
+Pi uses Scaleway's serverless OpenAI-compatible endpoint. See the [Scaleway Generative APIs quickstart](https://www.scaleway.com/en/docs/generative-apis/quickstart/).
 
 ### Amazon Bedrock
 
